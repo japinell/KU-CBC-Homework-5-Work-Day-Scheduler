@@ -27,7 +27,7 @@ function BuildTimeBlocks() {
   var time = today.hour(9);
 
   // 9 AM to 5 PM
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < 9; i++) {
     // Create a row
     rowEl = $("<div>");
     rowEl.addClass("row time-block");
