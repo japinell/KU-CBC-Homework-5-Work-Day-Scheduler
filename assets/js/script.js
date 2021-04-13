@@ -61,7 +61,6 @@ function SaveScheduleToLocalStorage() {
     workDaySchedule.push(schedule);
   } else {
     // Remove it and insert it
-    console.log("Remove it!");
     workDaySchedule.splice(index, 1);
     workDaySchedule.push(schedule);
   }
@@ -109,18 +108,19 @@ function BuildTimeBlocks() {
   var time = today.hour(15);
   var timeVal, timeText;
   var currentTime = Number(today.format("H"));
-  var rowEl, colEl, textAreaEl, saveBtn;
+  var rowEl, colEl, textAreaEl, iEl;
 
   // 9 AM to 5 PM
   for (var i = 0; i < 9; i++) {
     //
     timeVal = Number(time.format("H"));
     timeText = time.format("hA"); // h[AM | PM]
-    // Create a row
+    // Row
     rowEl = $("<div>");
     rowEl.attr("id", timeText);
     rowEl.addClass("row time-block");
 
+    // Columns
     // Hour
     colEl = $("<div>");
     // colEl.addClass("col-1 align-self-center");
@@ -141,12 +141,13 @@ function BuildTimeBlocks() {
 
     // Save button
     colEl = $("<div>");
+    // colEl.addClass("col-1 saveBtn align-self-center");
     colEl.addClass("col-1 saveBtn");
     colEl.text("");
 
-    saveBtn = $("<button>");
-    saveBtn.addClass("far fa-save align-self-center");
-    colEl.append(saveBtn);
+    iEl = $("<i>");
+    iEl.addClass("fa fa-save");
+    colEl.append(iEl);
 
     rowEl.append(colEl);
 
@@ -176,6 +177,7 @@ function InitializeSchedule() {
   //
 }
 
-containerDiv.on("click", "button", SaveScheduleToLocalStorage);
+// Listen for clicks on the Save button, an i element
+containerDiv.on("click", "i", SaveScheduleToLocalStorage);
 
 InitializeSchedule();
