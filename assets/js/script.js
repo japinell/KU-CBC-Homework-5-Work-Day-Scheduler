@@ -19,45 +19,84 @@ $("#currentDay").text(today.format("dddd, MMM Do"));
 // Load schedule from localStorage
 function LoadScheduleFromLocalStorage() {
   //
-  workDaySchedule = JSON.parse(localStorage.getItem("WorkDaySchedule"));
+  var savedWorkDaySchedule = JSON.parse(
+    localStorage.getItem("WorkDaySchedule")
+  );
+  //   workDaySchedule = JSON.parse(localStorage.getItem("WorkDaySchedule"));
+  //
+  if (savedWorkDaySchedule != null) {
+    workDaySchedule = savedWorkDaySchedule;
+  }
 }
 
 // Save schedule to localStorage
-function SaveScheduleToLocalStorage_Old() {
+function SaveScheduleToLocalStorage() {
+  //
+  var newDate = today.format("YYYY-MM-DD");
+  var newTime = $(this).parents(".time-block").children(".hour").text().trim();
+  var newTask = $(this)
+    .parents(".time-block")
+    .children(".form-floatting")
+    .children(".textarea")
+    .val()
+    .trim();
   //
   schedule = {
-    date: "2021-04-12",
-    time: "15",
-    task: "Event 1",
+    date: newDate,
+    time: newTime,
+    task: newTask,
   };
-  workDaySchedule.push(schedule);
   //
-  schedule = {
-    date: "2021-04-12",
-    time: "16",
-    task: "Event 2",
-  };
-  workDaySchedule.push(schedule);
+  var index = -1;
+  for (var i = 0, l = workDaySchedule.length; i < l; i++) {
+    if (workDaySchedule[i].time === newTime) {
+      index = i;
+      break;
+    }
+  }
+
   //
-  schedule = {
-    date: "2021-04-12",
-    time: "17",
-    task: "Event 3",
-  };
-  workDaySchedule.push(schedule);
+  if (index < 0) {
+    // Insert it
+    workDaySchedule.push(schedule);
+  } else {
+    // Remove it and insert it
+    console.log("Remove it!");
+    workDaySchedule.splice(index, 1);
+    workDaySchedule.push(schedule);
+  }
   //
   localStorage.setItem("WorkDaySchedule", JSON.stringify(workDaySchedule));
 }
 
+// Check if the new item is already in the workDaySchedule array
+function FindObjectInWorkDaySchedule(newTime) {
+  //
+  var index = -1;
+
+  for (var i = 0, l = workDaySchedule.length; i < l; i++) {
+    if (workDaySchedule[i].time === newTime) {
+      index = i;
+      break;
+    }
+  }
+
+  //
+  return index;
+  //
+}
+
 // Set reserved time blocks
 function SetReservedTimeBlocks() {
+  //
+  LoadScheduleFromLocalStorage();
   //
   if (workDaySchedule != null) {
     //
     workDaySchedule.forEach(function (item) {
       //
       var row = "#" + item.time; // Row id = #[hour]
-      $(row).children(".form-floatting").children(".textarea").text(item.task);
+      $(row).children(".form-floatting").children(".textarea").val(item.task);
       //
     });
     //
@@ -79,7 +118,7 @@ function BuildTimeBlocks() {
     timeText = time.format("hA"); // h[AM | PM]
     // Create a row
     rowEl = $("<div>");
-    rowEl.attr("id", timeVal);
+    rowEl.attr("id", timeText);
     rowEl.addClass("row time-block");
 
     // Hour
@@ -129,29 +168,14 @@ function BuildTimeBlocks() {
   }
 }
 
-// Save schedule to localStorage
-function SaveScheduleToLocalStorage() {
-  //
-  var date = today.format("YYYY-MM-DD");
-  var time = $(this).parents(".row").children(".hour").text().trim();
-  var task = $(this).parents(".row").children(".form-floatting").text().trim();
-  //
-  console.log($(this).parents(".row").children(".form-floatting"));
-  console.log("time=" + time + ", task=" + task);
-
-  //   if (task != null) {
-  //   }
-}
-
 // Initialization
-function InitializeComponents() {
+function InitializeSchedule() {
   //
-  //   SaveScheduleToLocalStorage_Old();
-  LoadScheduleFromLocalStorage();
   BuildTimeBlocks();
   SetReservedTimeBlocks();
+  //
 }
 
 containerDiv.on("click", "button", SaveScheduleToLocalStorage);
 
-InitializeComponents();
+InitializeSchedule();
