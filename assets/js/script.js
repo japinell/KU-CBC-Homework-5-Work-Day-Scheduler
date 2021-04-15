@@ -44,8 +44,6 @@ function SaveScheduleToLocalStorage() {
     .val()
     .trim();
   //
-  var scheduleObj;
-
   schedule = {
     date: newDate,
     time: newTime,
@@ -130,7 +128,6 @@ function RenderBookedTimeBlocks() {
   if (workDaySchedule != null) {
     //
     var index;
-    var scheduleObj;
     //
     // Select the timeblock container and children with class = "time-block"
     //
