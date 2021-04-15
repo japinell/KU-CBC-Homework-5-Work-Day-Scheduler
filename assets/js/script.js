@@ -12,7 +12,8 @@ var workDaySchedule = [];
 
 // Variables
 var today = dayjs();
-
+var currentTime = Number(today.format("H"));
+var currentTimeText = Number(today.format("hA"));
 //
 $("#currentDay").text(today.format("dddd, MMM Do"));
 
@@ -22,11 +23,11 @@ function LoadScheduleFromLocalStorage() {
   var savedWorkDaySchedule = JSON.parse(
     localStorage.getItem("WorkDaySchedule")
   );
-  //   workDaySchedule = JSON.parse(localStorage.getItem("WorkDaySchedule"));
   //
   if (savedWorkDaySchedule != null) {
     workDaySchedule = savedWorkDaySchedule;
   }
+  //
 }
 
 // Save schedule to localStorage
@@ -54,7 +55,6 @@ function SaveScheduleToLocalStorage() {
       break;
     }
   }
-
   //
   if (index < 0) {
     // Insert it
@@ -66,6 +66,7 @@ function SaveScheduleToLocalStorage() {
   }
   //
   localStorage.setItem("WorkDaySchedule", JSON.stringify(workDaySchedule));
+  //
 }
 
 // Check if the new item is already in the workDaySchedule array
@@ -79,7 +80,6 @@ function FindObjectInWorkDaySchedule(newTime) {
       break;
     }
   }
-
   //
   return index;
   //
@@ -105,10 +105,11 @@ function SetReservedTimeBlocks() {
 // Build time blocks
 function BuildTimeBlocks() {
   //
-  var time = today.hour(15);
+  var time = today.hour(17);
   var timeVal, timeText;
-  var currentTime = Number(today.format("H"));
-  var rowEl, colEl, textAreaEl, iEl;
+  var rowEl, colEl, textAreaEl, saveBtnEl, iEl;
+
+  containerDiv.addClass("container-fluid");
 
   // 9 AM to 5 PM
   for (var i = 0; i < 9; i++) {
@@ -123,45 +124,54 @@ function BuildTimeBlocks() {
     // Columns
     // Hour
     colEl = $("<div>");
-    // colEl.addClass("col-1 align-self-center");
-    colEl.addClass("col-1 hour");
+    colEl.addClass("row col-sm-1 hour text-right");
     colEl.text(timeText);
-    rowEl.append(colEl);
+    colEl.appendTo(rowEl);
 
     // Text area
     colEl = $("<div>");
-    colEl.addClass("col-10 form-floatting");
+    colEl.addClass("row col-sm-10 px-0 form-floatting");
 
     textAreaEl = $("<textarea>");
-    textAreaEl.addClass("form-control textarea");
+    textAreaEl.addClass("form-control textarea text-dark");
     textAreaEl.text("");
-    colEl.append(textAreaEl);
+    textAreaEl.appendTo(colEl);
 
-    rowEl.append(colEl);
+    colEl.appendTo(rowEl);
 
     // Save button
     colEl = $("<div>");
-    // colEl.addClass("col-1 saveBtn align-self-center");
-    colEl.addClass("col-1 saveBtn");
-    colEl.text("");
+    colEl.addClass("row col-sm-1 px-0 text-left align-self-center");
+
+    saveBtnEl = $("<button>");
+    saveBtnEl.addClass("btn btn-lg btn-block saveBtn");
 
     iEl = $("<i>");
     iEl.addClass("fa fa-save");
-    colEl.append(iEl);
+    iEl.appendTo(saveBtnEl);
 
-    rowEl.append(colEl);
+    saveBtnEl.appendTo(colEl);
 
-    containerDiv.append(rowEl);
+    colEl.appendTo(rowEl);
+
+    rowEl.appendTo(containerDiv);
 
     // Block this row if it is for a past time or noon
     if (timeVal < currentTime || timeVal == 12) {
-      rowEl.addClass("past");
-      $(".form-control").attr("disabled", true);
+      textAreaEl.addClass("past");
+      textAreaEl.attr("disabled", true);
+      // $(".form-control").addClass("past");
+      // $(".form-control").attr("disabled", true);
     } else if (timeVal == currentTime) {
-      rowEl.addClass("present");
-      //   $(".form-control").attr("disabled", false);
+      textAreaEl.addClass("present");
+      // $(".timeblock")
+      // .children("#" + currentTimeText)
+      // .addClass("present");
+      // $(".form-control").addClass("present");
     } else {
-      rowEl.addClass("future");
+      textAreaEl.addClass("future");
+      // rowEl.addClass("future");
+      // $(".form-control").addClass("future");
     }
 
     // Increment time block by 1 hour
