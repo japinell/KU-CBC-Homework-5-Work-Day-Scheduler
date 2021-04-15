@@ -44,13 +44,17 @@ function SaveScheduleToLocalStorage() {
     .val()
     .trim();
   //
+  var scheduleObj;
+
   schedule = {
     date: newDate,
     time: newTime,
     task: newTask,
   };
   //
-  var index = IsTimeBooked(newTime);
+  // Looks for the timeblock id in the schedule
+  //
+  var index = IsTimeBlockBooked(newTime);
   //
   if (index < 0) {
     // Insert it
@@ -65,18 +69,20 @@ function SaveScheduleToLocalStorage() {
   //
 }
 
-// Check if the new item is already in the workDaySchedule array
-function IsTimeBooked(newTime) {
+// Check if the item is already in the workDaySchedule array
+function IsTimeBlockBooked(newTime) {
   //
   // If found, returns the array index; otherwise, -1
   //
   var index = -1;
   //
   for (var i = 0, l = workDaySchedule.length; i < l; i++) {
+    //
     if (workDaySchedule[i].time === newTime) {
       index = i;
       break;
     }
+    //
   }
   //
   return index;
@@ -116,13 +122,14 @@ function StyleTimeBlocks() {
   //
 }
 
-// Set reserved time blocks
+// Renders the text for the reserved time blocks
 function RenderBookedTimeBlocks() {
   //
   LoadScheduleFromLocalStorage();
   //
   if (workDaySchedule != null) {
     //
+    var index;
     var scheduleObj;
     //
     // Select the timeblock container and children with class = "time-block"
@@ -134,27 +141,26 @@ function RenderBookedTimeBlocks() {
         timeBlockId = $(this).attr("time-block-id");
         timeBlockVal = $(this).attr("time-block-value");
         //
-        //  Looks for the timeblock id in the schedule
+        // Looks for the timeblock id in the schedule
         //
-        scheduleObj = workDaySchedule.filter(function (obj, val) {
-          return obj.date == todayText && obj.time == timeBlockId;
-        });
+        index = IsTimeBlockBooked(timeBlockId);
         //
-        if (scheduleObj.length > 0) {
+        if (index >= 0) {
           //
           $(this)
             .children(".form-floatting")
             .children(".textarea")
-            .val(scheduleObj[0].task);
+            .val(workDaySchedule[index].task);
           //
         }
+        //
       });
     //
   }
   //
 }
 
-// Build time blocks (this could have been done in the HTML, but I took the challenge farther)
+// Render the time blocks (this could have been done in the HTML, but I took the challenge farther)
 function RenderTimeBlocks() {
   //
   var time = today.hour(9);
@@ -227,7 +233,7 @@ function InitializeSchedule() {
 }
 
 // Listen for clicks on the Save button, an i element
-containerDiv.on("click", "i", SaveScheduleToLocalStorage);
+containerDiv.on("click", "button", SaveScheduleToLocalStorage);
 
 // Rock & Roll!
 InitializeSchedule();
