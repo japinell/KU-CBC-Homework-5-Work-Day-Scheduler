@@ -105,7 +105,7 @@ function SetReservedTimeBlocks() {
 // Build time blocks
 function BuildTimeBlocks() {
   //
-  var time = today.hour(17);
+  var time = today.hour(15);
   var timeVal, timeText;
   var rowEl, colEl, textAreaEl, saveBtnEl, iEl;
 
