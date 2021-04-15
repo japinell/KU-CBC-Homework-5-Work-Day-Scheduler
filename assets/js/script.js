@@ -1,5 +1,6 @@
-// Elements
+// Timeblock elements
 const containerDiv = $(".container");
+const TIME_BLOCKS_NUMBER = 9;
 
 // Objects
 var schedule = {
@@ -12,6 +13,7 @@ var workDaySchedule = [];
 
 // Variables
 var today = dayjs();
+var todayText = today.format("YYYY-MM-DD");
 var currentTime = Number(today.format("H"));
 var currentTimeText = Number(today.format("hA"));
 //
@@ -48,13 +50,7 @@ function SaveScheduleToLocalStorage() {
     task: newTask,
   };
   //
-  var index = -1;
-  for (var i = 0, l = workDaySchedule.length; i < l; i++) {
-    if (workDaySchedule[i].time === newTime) {
-      index = i;
-      break;
-    }
-  }
+  var index = IsTimeBooked(newTime);
   //
   if (index < 0) {
     // Insert it
@@ -70,10 +66,12 @@ function SaveScheduleToLocalStorage() {
 }
 
 // Check if the new item is already in the workDaySchedule array
-function FindObjectInWorkDaySchedule(newTime) {
+function IsTimeBooked(newTime) {
+  //
+  // If found, returns the array index; otherwise, -1
   //
   var index = -1;
-
+  //
   for (var i = 0, l = workDaySchedule.length; i < l; i++) {
     if (workDaySchedule[i].time === newTime) {
       index = i;
@@ -85,40 +83,96 @@ function FindObjectInWorkDaySchedule(newTime) {
   //
 }
 
+// Style time blocks with past, present, and future classes
+function StyleTimeBlocks() {
+  //
+  var timeBlockId, timeBlockVal, textAreaEl;
+  //
+  // Select the timeblock container and children with class = "time-block"
+  //
+  $(".container")
+    .children(".time-block")
+    .each(function () {
+      //
+      timeBlockId = $(this).attr("time-block-id");
+      timeBlockVal = $(this).attr("time-block-value");
+      textAreaEl = $(this).children(".form-floatting").children(".textarea");
+      //
+      if (timeBlockVal < currentTime || timeBlockVal == 12) {
+        //
+        textAreaEl.addClass("past");
+        textAreaEl.attr("disabled", true);
+        //
+      } else if (timeBlockVal == currentTime) {
+        //
+        textAreaEl.addClass("present");
+        //
+      } else {
+        //
+        textAreaEl.addClass("future");
+        //
+      }
+    });
+  //
+}
+
 // Set reserved time blocks
-function SetReservedTimeBlocks() {
+function RenderBookedTimeBlocks() {
   //
   LoadScheduleFromLocalStorage();
   //
   if (workDaySchedule != null) {
     //
-    workDaySchedule.forEach(function (item) {
-      //
-      var row = "#" + item.time; // Row id = #[hour]
-      $(row).children(".form-floatting").children(".textarea").val(item.task);
-      //
-    });
+    var scheduleObj;
+    //
+    // Select the timeblock container and children with class = "time-block"
+    //
+    $(".container")
+      .children(".time-block")
+      .each(function () {
+        //
+        timeBlockId = $(this).attr("time-block-id");
+        timeBlockVal = $(this).attr("time-block-value");
+        //
+        //  Looks for the timeblock id in the schedule
+        //
+        scheduleObj = workDaySchedule.filter(function (obj, val) {
+          return obj.date == todayText && obj.time == timeBlockId;
+        });
+        //
+        if (scheduleObj.length > 0) {
+          //
+          $(this)
+            .children(".form-floatting")
+            .children(".textarea")
+            .val(scheduleObj[0].task);
+          //
+        }
+      });
     //
   }
+  //
 }
 
-// Build time blocks
-function BuildTimeBlocks() {
+// Build time blocks (this could have been done in the HTML, but I took the challenge farther)
+function RenderTimeBlocks() {
   //
-  var time = today.hour(15);
+  var time = today.hour(9);
   var timeVal, timeText;
   var rowEl, colEl, textAreaEl, saveBtnEl, iEl;
 
   containerDiv.addClass("container-fluid");
 
   // 9 AM to 5 PM
-  for (var i = 0; i < 9; i++) {
+  for (var i = 0; i < TIME_BLOCKS_NUMBER; i++) {
     //
     timeVal = Number(time.format("H"));
     timeText = time.format("hA"); // h[AM | PM]
     // Row
     rowEl = $("<div>");
     rowEl.attr("id", timeText);
+    rowEl.attr("time-block-id", timeText);
+    rowEl.attr("time-block-value", timeVal);
     rowEl.addClass("row time-block");
 
     // Columns
@@ -156,38 +210,24 @@ function BuildTimeBlocks() {
 
     rowEl.appendTo(containerDiv);
 
-    // Block this row if it is for a past time or noon
-    if (timeVal < currentTime || timeVal == 12) {
-      textAreaEl.addClass("past");
-      textAreaEl.attr("disabled", true);
-      // $(".form-control").addClass("past");
-      // $(".form-control").attr("disabled", true);
-    } else if (timeVal == currentTime) {
-      textAreaEl.addClass("present");
-      // $(".timeblock")
-      // .children("#" + currentTimeText)
-      // .addClass("present");
-      // $(".form-control").addClass("present");
-    } else {
-      textAreaEl.addClass("future");
-      // rowEl.addClass("future");
-      // $(".form-control").addClass("future");
-    }
-
     // Increment time block by 1 hour
     time = time.add(1, "h");
+    //
   }
+  //
 }
 
 // Initialization
 function InitializeSchedule() {
   //
-  BuildTimeBlocks();
-  SetReservedTimeBlocks();
+  RenderTimeBlocks();
+  RenderBookedTimeBlocks();
+  StyleTimeBlocks();
   //
 }
 
 // Listen for clicks on the Save button, an i element
 containerDiv.on("click", "i", SaveScheduleToLocalStorage);
 
+// Rock & Roll!
 InitializeSchedule();
