@@ -183,17 +183,13 @@ function RenderTimeBlocks() {
     // Columns
     // Hour
     colEl = $("<div>");
-    colEl.addClass(
-      "col-3 col-sm-2 col-md-2 col-lg-2 col-xl-1 text-right row hour"
-    );
+    colEl.addClass("col-xl-1 col-sm-2 col-3 text-right row hour");
     colEl.text(timeText);
     colEl.appendTo(rowEl);
 
     // Text area
     colEl = $("<div>");
-    colEl.addClass(
-      "col-8 col-sm-10 col-md-9 col-lg-9 col-xl-10 form-floatting row px-0"
-    );
+    colEl.addClass("col-xl-10 col-sm-8 col-6 form-floatting row px-0");
 
     textAreaEl = $("<textarea>");
     textAreaEl.addClass("form-control text-dark textarea");
@@ -204,9 +200,7 @@ function RenderTimeBlocks() {
 
     // Save button
     colEl = $("<div>");
-    colEl.addClass(
-      "col-3 col-sm-2 col-md-2 col-lg-2 col-xl-1 text-left align-self-center row"
-    );
+    colEl.addClass("col-xl-1 col-sm-2 col-3 text-left align-self-center row");
 
     saveBtnEl = $("<button>");
     saveBtnEl.addClass("btn btn-lg btn-block saveBtn");
