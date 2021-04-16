@@ -102,7 +102,8 @@ function StyleTimeBlocks() {
       timeBlockVal = $(this).attr("time-block-value");
       textAreaEl = $(this).children(".form-floatting").children(".textarea");
       //
-      if (timeBlockVal < currentTime || timeBlockVal == 12) {
+      //if (timeBlockVal < currentTime || timeBlockVal == 12) {
+      if (timeBlockVal < currentTime) {
         //
         textAreaEl.addClass("past");
         textAreaEl.attr("disabled", true);
@@ -160,11 +161,11 @@ function RenderBookedTimeBlocks() {
 // Render the time blocks (this could have been done in the HTML, but I took the challenge farther)
 function RenderTimeBlocks() {
   //
-  var time = today.hour(9);
+  var time = today.hour(19);
   var timeVal, timeText;
   var rowEl, colEl, textAreaEl, saveBtnEl, iEl;
 
-  containerDiv.addClass("container-fluid");
+  // containerDiv.addClass("container-sm");
 
   // 9 AM to 5 PM
   for (var i = 0; i < TIME_BLOCKS_NUMBER; i++) {
@@ -173,24 +174,28 @@ function RenderTimeBlocks() {
     timeText = time.format("hA"); // h[AM | PM]
     // Row
     rowEl = $("<div>");
-    rowEl.attr("id", timeText);
+    // rowEl.attr("id", timeText);
     rowEl.attr("time-block-id", timeText);
     rowEl.attr("time-block-value", timeVal);
-    rowEl.addClass("row time-block");
+    rowEl.addClass("row time-block flex-row");
 
     // Columns
     // Hour
     colEl = $("<div>");
-    colEl.addClass("row col-sm-1 hour text-right");
+    colEl.addClass(
+      "col-3 col-sm-2 col-md-2 col-lg-2 col-xl-1 text-right row hour"
+    );
     colEl.text(timeText);
     colEl.appendTo(rowEl);
 
     // Text area
     colEl = $("<div>");
-    colEl.addClass("row col-sm-10 px-0 form-floatting");
+    colEl.addClass(
+      "col-8 col-sm-10 col-md-9 col-lg-9 col-xl-10 form-floatting row px-0"
+    );
 
     textAreaEl = $("<textarea>");
-    textAreaEl.addClass("form-control textarea text-dark");
+    textAreaEl.addClass("form-control text-dark textarea");
     textAreaEl.text("");
     textAreaEl.appendTo(colEl);
 
@@ -198,7 +203,9 @@ function RenderTimeBlocks() {
 
     // Save button
     colEl = $("<div>");
-    colEl.addClass("row col-sm-1 px-0 text-left align-self-center");
+    colEl.addClass(
+      "col-3 col-sm-2 col-md-2 col-lg-2 col-xl-1 text-left align-self-center row"
+    );
 
     saveBtnEl = $("<button>");
     saveBtnEl.addClass("btn btn-lg btn-block saveBtn");
