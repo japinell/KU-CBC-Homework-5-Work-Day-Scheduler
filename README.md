@@ -72,6 +72,6 @@ To build the general structure of the application
 
 ### JavaScript (68%)
 
-**jQuery** for dynamically rendering the timeblock elements, and reading and writing data from/to them. It also uses **DayJS** to parse, validate, manipulate, and display dates and times. Timeblocks are styled as they are created.
+**jQuery** for dynamically rendering the timeblock elements, and reading and writing data from/to them. It also uses **DayJS** to parse, validate, manipulate, and display dates and times. Timeblocks are manipulated with JQuery and styled with **Bootstrap** and **CSS** when/after they are created.
 
 The application uses an array of objects to store the schedule, functions to render the timeblocks, and helper functions to read and write from/to localstorage to persist the schedule as a **JSON** object, handle the user interaction, and style the timeblocks.
