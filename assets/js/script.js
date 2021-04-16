@@ -1,5 +1,6 @@
 // Timeblock elements
 const containerDiv = $(".container");
+const TIME_BLOCKS_START = 9;
 const TIME_BLOCKS_NUMBER = 9;
 
 // Objects
@@ -161,7 +162,7 @@ function RenderBookedTimeBlocks() {
 // Render the time blocks (this could have been done in the HTML, but I took the challenge farther)
 function RenderTimeBlocks() {
   //
-  var time = today.hour(19);
+  var time = today.hour(TIME_BLOCKS_START);
   var timeVal, timeText;
   var rowEl, colEl, textAreaEl, saveBtnEl, iEl;
 
