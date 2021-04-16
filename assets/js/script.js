@@ -1,6 +1,6 @@
 // Timeblock elements
 const containerDiv = $(".container");
-const TIME_BLOCKS_START = 15;
+const TIME_BLOCKS_START = 9;
 const TIME_BLOCKS_NUMBER = 9;
 
 // Objects
