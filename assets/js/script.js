@@ -140,8 +140,8 @@ function StyleTimeBlocks() {
       if (timeBlockVal < currentTime) {
         //
         textAreaEl.addClass("past");
-        textAreaEl.attr("disabled", true);
-        saveBtn.attr("disabled", true);
+        // textAreaEl.attr("disabled", true);
+        // saveBtn.attr("disabled", true);
         //
       } else if (timeBlockVal == currentTime) {
         //
